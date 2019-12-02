@@ -1,40 +1,40 @@
 <div class="d-flex align-items-center">
     <h1>投稿一覧</h1>
     <div class="ml-auto posts_button">
-        <a class="btn btn-outline-info" href="/posts/new" role="button">投稿</a>
+        <!-- 修正-->
+        <%= link_to '投稿', new_post_path, class: "btn btn-outline-info" %> 
     </div>
 </div>
+
+<% if flash[:notice] %>
+    <div class="alert alert-primary"><%= flash[:notice] %></div>
+<% end %>
+
 <table class="table table-bordered border-primary table-hover table-sm posts_table">
-  <thead class="thead-dark">
+  <thead class="bg-info text-light">
     <tr>
       <th scope="col" style="width: 40px">No.</th>
-      <th scope="col" style="width: 500px">投稿タイトル</th>
+      <th scope="col" style="width: 700px">投稿タイトル</th>
       <th scope="col">投稿者</th>
       <th scope="col">投稿日</th>
       <th scope="col">更新日時</th>
+      <!-- 追加 -->
+      <th></th>
     </tr>
   </thead>
   <tbody>
-    <tr>
-      <th scope="row">1</th>
-      <td>Test1</td>
-      <td>hoge</td>
-      <td>2018/4/1</td>
-      <td>2018/4/1</td>
-    </tr>
-    <tr>
-      <th scope="row">2</th>
-      <td>Test1</td>
-      <td>hoge</td>
-      <td>2018/4/1</td>
-      <td>2018/4/1</td>
-    </tr>
-    <tr>
-      <th scope="row">3</th>
-      <td>Test1</td>
-      <td>hoge</td>
-      <td>2018/4/1</td>
-      <td>2018/4/1</td>
-    </tr>
+      <% @posts.each do |post| %>
+        <tr>
+            <th><%= post.id %></th>
+            <td><%= post.title %></td>
+            <td><%= post.name %></td>
+            <td><%= post.created_at.to_s(:datetime_base) %></td>
+            <td><%= post.updated_at.to_s(:datetime_base) %></td>
+            <!-- 追加 post オブジェクトを指定することで、そのページの詳細画面を表示させることができる-->
+            <td><%= link_to "詳細" , post, class: 'btn btn-outline-info' %></td>
+            <td><%= link_to "削除" , post, class: 'btn btn-outline-info', method: :delete, data: {confirm: "投稿記事を削除しますか？", cancel: "キャンセル", commit: "削除する", title: "削除の確認"} %></td>
+        </tr>
+      <% end %>
   </tbody>
 </table>
+<%= paginate @posts %>
