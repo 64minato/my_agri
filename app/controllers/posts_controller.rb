@@ -1,4 +1,5 @@
 class PostsController < ApplicationController
+  before_action :set_post, only: %i[show edit update destroy]
   def index
     @posts = Post.page(params[:page])
   end
@@ -22,17 +23,14 @@ class PostsController < ApplicationController
   end
 
   def show
-    @post = Post.find(params[:id])
     # @comment = @post.comments.new
     @comment = Comment.new(post_id: @post.id)
   end
 
   def edit
-    @post = Post.find(params[:id])
   end
 
   def update
-    post = Post.find(params[:id])
     flash[:notice] = "「#{post.title}」の記事が投稿されました!"
     post.update(post_params)
 
@@ -40,7 +38,6 @@ class PostsController < ApplicationController
   end
 
   def destroy
-    post = Post.find(params[:id])
     post.delete
     flash[:notice] = "「#{post.title}」の記事が投稿されました!"
     redirect_to posts_path
@@ -50,5 +47,9 @@ class PostsController < ApplicationController
 
   def post_params
     params.require(:post).permit(:name, :title, :content)
+  end
+
+  def set_post
+    @post = Post.find(params[:id])
   end
 end
