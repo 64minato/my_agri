@@ -49,6 +49,9 @@ test:
 #
 production:
   <<: *default
-  database: my_agri_production
-  username: my_agri
-  password: <%= ENV['MY_AGRI_DATABASE_PASSWORD'] %>
+  # database: my_agri_production
+  # username: my_agri
+  # password: <%= ENV['MY_AGRI_DATABASE_PASSWORD'] %>
+  adapter: postgresql
+  encoding: unicode
+  pool: 5
