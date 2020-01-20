@@ -1,0 +1,37 @@
+version: '3'
+
+# サービスの定義
+services:
+    # サービス1
+    webserver:
+        # 同じディレクトリ配下にあるDockerfileをビルド
+        build: .
+        # rails実行(s->serverの略)
+        command: bundle exec rails s -p 3000 -b '0.0.0.0'
+        # ローカルPCのディレクトリをrubyコンテナにマウント
+        volumes:
+            - .:/app
+        # アプリ公開ポートを指定<公開ポート番号>:<コンテナ内の転送先ポート>
+        ports:
+            - 3000:3000
+        # データベースを先に起動してからwebserverを起動
+        depends_on:
+            - db 
+        # デバッグに使用するため設定
+        tty: true
+        stdin_open: true
+    #サービス2
+    db:
+        image: mysql:5.7
+        # rubyコンテナの/var/lib/mysqlにマウント
+        volumes:
+            - post-volume:/var/lib/mysql
+        # mysqlのルートパスワードを設定するための環境変数
+        environment:
+            MYSQL_ROOT_PASSWORD: password
+
+# マウントするデータ領域を指定
+volumes:
+    # ローカルPC上にpost-volume領域が作成される
+    # コンテナを作成し直してもデータを保持したいため
+    post-volume:
